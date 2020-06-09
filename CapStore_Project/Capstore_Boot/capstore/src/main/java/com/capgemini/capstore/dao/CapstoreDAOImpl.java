@@ -1,0 +1,133 @@
+package com.capgemini.capstore.dao;
+
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.EntityTransaction;
+import javax.persistence.Persistence;
+import javax.persistence.PersistenceUnit;
+import javax.persistence.Query;
+
+import org.springframework.stereotype.Repository;
+
+import com.capgemini.capstore.beans.FeedbackBean;
+import com.capgemini.capstore.beans.LoginBean;
+import com.capgemini.capstore.beans.OrderBean;
+import com.capgemini.capstore.beans.OrderStatusBean;
+import com.capgemini.capstore.beans.PermanentMerchantBean;
+import com.capgemini.capstore.beans.ProductBean;
+import com.capgemini.capstore.beans.TemporaryCustomerBean;
+import com.capgemini.capstore.beans.TemporaryMerchantBean;
+import com.capgemini.capstore.customexception.CapstoreException;
+
+@Repository
+public class CapstoreDAOImpl implements CapstoreDAO {
+
+	@PersistenceUnit
+	private EntityManagerFactory entityManagerFactory;
+
+	@Override
+	public List<PermanentMerchantBean> viewVerifiedMerchant() {
+		entityManagerFactory = Persistence.createEntityManagerFactory("capstorePersistenceUnit");
+		EntityManager entityManager = entityManagerFactory.createEntityManager();
+		try {
+			EntityTransaction entityTransaction = entityManager.getTransaction();
+			String jpql = "from PermanentMerchantBean";
+			entityTransaction.begin();
+			Query query = entityManager.createQuery(jpql);
+			List<PermanentMerchantBean> verifiedMerchantList = null;
+			verifiedMerchantList = query.getResultList();
+			entityTransaction.commit();
+			return verifiedMerchantList;
+		} catch (Exception e) {
+			throw new CapstoreException("Something went wrong... Verified merchant list not found..");
+		}
+	}
+
+	@Override
+	public List<LoginBean> viewVerifiedCustomer() {
+		entityManagerFactory = Persistence.createEntityManagerFactory("capstorePersistenceUnit");
+		EntityManager entityManager = entityManagerFactory.createEntityManager();
+		try {
+			EntityTransaction entityTransaction = entityManager.getTransaction();
+			String jpql = "from LoginBean where role=:role";
+			entityTransaction.begin();
+			Query query = entityManager.createQuery(jpql);
+			query.setParameter("role", "customer");
+			List<LoginBean> verifiedCustomerList = null;
+			verifiedCustomerList = query.getResultList();
+			entityTransaction.commit();
+			return verifiedCustomerList;
+		} catch (Exception e) {
+			throw new CapstoreException("Something went wrong... Verified customer list not found..");
+		}
+	}
+
+	@Override
+	public List<ProductBean> viewProduct() {
+		entityManagerFactory = Persistence.createEntityManagerFactory("capstorePersistenceUnit");
+		EntityManager entityManager = entityManagerFactory.createEntityManager();
+		try {
+			EntityTransaction entityTransaction = entityManager.getTransaction();
+			String jpql = "from ProductBean";
+			entityTransaction.begin();
+			Query query = entityManager.createQuery(jpql);
+			List<ProductBean> productList = null;
+			productList = query.getResultList();
+			entityTransaction.commit();
+			return productList;
+		} catch (Exception e) {
+			e.printStackTrace();
+			// throw new CapstoreException("Something went wrong... Product list not
+			// found..");
+		}
+		return null;
+	}
+
+	@Override
+	public List<String> viewProductByBrandName() {
+		entityManagerFactory = Persistence.createEntityManagerFactory("capstorePersistenceUnit");
+		EntityManager entityManager = entityManagerFactory.createEntityManager();
+		try {
+			EntityTransaction entityTransaction = entityManager.getTransaction();
+			String jpql = "select brandName from ProductBean";
+			entityTransaction.begin();
+			Query query = entityManager.createQuery(jpql);
+			List<String> productList = null;
+			productList = query.getResultList();
+			Set<String> set = new HashSet<>(productList);
+			productList.clear();
+			productList.addAll(set);
+			entityTransaction.commit();
+			return productList;
+		} catch (Exception e) {
+			e.printStackTrace();
+			// throw new CapstoreException("Something went wrong... Product list not
+			// found..");
+		}
+		return null;
+	}
+
+	@Override
+	public List<ProductBean> getProductListByBrandName(String brandName) {
+		EntityManager entityManager = entityManagerFactory.createEntityManager();
+		List<ProductBean> productList = null;
+		try {
+
+			String jpql = "from ProductBean where brandName=:brandName";
+			Query query = entityManager.createQuery(jpql);
+			// String brandName = hotelInformationBean.getLicenceNumber();
+			query.setParameter("brandName", brandName);
+
+			productList = query.getResultList();
+
+			return productList;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+}

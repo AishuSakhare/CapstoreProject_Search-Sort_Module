@@ -1,0 +1,44 @@
+package com.capgemini.capstore.service;
+
+import java.util.List;
+
+import com.capgemini.capstore.beans.FeedbackBean;
+import com.capgemini.capstore.beans.LoginBean;
+import com.capgemini.capstore.beans.OrderBean;
+import com.capgemini.capstore.beans.OrderStatusBean;
+import com.capgemini.capstore.beans.PermanentMerchantBean;
+import com.capgemini.capstore.beans.ProductBean;
+import com.capgemini.capstore.beans.TemporaryCustomerBean;
+import com.capgemini.capstore.beans.TemporaryMerchantBean;
+
+public interface CapstoreService {
+
+	public boolean addThirdMerchant(PermanentMerchantBean permanentMerchantBean);
+
+	public boolean deleteMerchant(String Email);
+
+	public List<FeedbackBean> viewFeedback();
+
+	public List<OrderBean> viewPlaceOrder();
+
+	public List<OrderStatusBean> viewCancelledOrder();
+
+	public List<PermanentMerchantBean> viewVerifiedMerchant();
+
+	public List<TemporaryMerchantBean> ViewMerchantListToVerify();
+
+	public List<TemporaryCustomerBean> ViewCustomerListToVerify();
+
+	public List<LoginBean> viewVerifiedCustomer();
+
+	public List<ProductBean> viewProduct();
+	
+	public List<ProductBean> viewProductByBrandName();
+	
+	public boolean register(TemporaryMerchantBean temporaryMerchantBean);
+	
+	public boolean merchantVerification(String email);
+	
+	public boolean customerVerification(String email);
+
+}

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<qualifiedTypeNameHistroy>
+<fullyQualifiedTypeName name="org.junit.runner.RunWith"/>
+<fullyQualifiedTypeName name="cucumber.api.CucumberOptions"/>
+<fullyQualifiedTypeName name="javax.persistence.Column"/>
+<fullyQualifiedTypeName name="java.util.Set"/>
+<fullyQualifiedTypeName name="com.capgemini.capstore.beans.ProductBean"/>
+<fullyQualifiedTypeName name="com.capgemini.capstore.beans.LoginBean"/>
+<fullyQualifiedTypeName name="com.capgemini.capstore.beans.TemporaryMerchantBean"/>
+<fullyQualifiedTypeName name="com.capgemini.capstore.beans.PermanentMerchantBean"/>
+</qualifiedTypeNameHistroy>

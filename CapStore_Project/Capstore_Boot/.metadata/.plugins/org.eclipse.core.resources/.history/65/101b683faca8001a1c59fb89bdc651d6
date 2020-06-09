@@ -1,0 +1,249 @@
+package com.capgemini.capstore.controller;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.capgemini.capstore.beans.CapstoreResponseBean;
+import com.capgemini.capstore.beans.FeedbackBean;
+import com.capgemini.capstore.beans.LoginBean;
+import com.capgemini.capstore.beans.OrderBean;
+import com.capgemini.capstore.beans.OrderStatusBean;
+import com.capgemini.capstore.beans.PermanentMerchantBean;
+import com.capgemini.capstore.beans.ProductBean;
+import com.capgemini.capstore.beans.TemporaryCustomerBean;
+import com.capgemini.capstore.beans.TemporaryMerchantBean;
+import com.capgemini.capstore.customexception.CapstoreException;
+import com.capgemini.capstore.service.CapstoreService;
+
+
+@RestController
+@CrossOrigin(origins = "*", allowedHeaders = "*")
+public class CapstoreController {
+
+	@Autowired
+	private CapstoreService service;
+
+	@PutMapping(path = "/addThirdMerchant")
+	public CapstoreResponseBean addThirdMerchant(@RequestBody PermanentMerchantBean permanentMerchantBean) {
+		boolean isAdded = service.addThirdMerchant(permanentMerchantBean);
+		CapstoreResponseBean response = new CapstoreResponseBean();
+		if (isAdded) {
+			response.setStatusCode(201);
+			response.setMessage("Success");
+			response.setDescription("Third Party Merchant Added");
+		} else {
+			response.setStatusCode(401);
+			response.setMessage("Failed");
+			response.setDescription("Something went wrong.. Please check!!");
+		}
+		return response;
+	}
+
+	@PutMapping(path = "/register")
+	public CapstoreResponseBean register(@RequestBody TemporaryMerchantBean temporaryMerchantBean) {
+		boolean isAdded = service.register(temporaryMerchantBean);
+		CapstoreResponseBean response = new CapstoreResponseBean();
+		if (isAdded) {
+			response.setStatusCode(201);
+			response.setMessage("Success");
+			response.setDescription("Merchant registered..!!");
+		} else {
+			response.setStatusCode(401);
+			response.setMessage("Failed");
+			response.setDescription("Something went wrong.. Please check!!");
+		}
+		return response;
+	}
+	
+	@DeleteMapping(path = "/deleteMerchant")
+	public CapstoreResponseBean deleteMerchant(@RequestParam String email) {
+		boolean isDeleted = service.deleteMerchant(email);
+		CapstoreResponseBean response = new CapstoreResponseBean();
+		if (isDeleted) {
+			response.setStatusCode(201);
+			response.setMessage("Success");
+			response.setDescription("Merchant is Deleted");
+		} else {
+			response.setStatusCode(401);
+			response.setMessage("Failed");
+			response.setDescription("Something went wrong.. Unable to delete merchant !!");
+		}
+		return response;
+	}
+
+	@GetMapping("/viewFeedback")
+	public CapstoreResponseBean viewFeedback() {
+		CapstoreResponseBean response = new CapstoreResponseBean();
+		List<FeedbackBean> feedbackList = service.viewFeedback();
+		if (feedbackList != null) {
+			response.setStatusCode(201);
+			response.setMessage("Success");
+			response.setDescription("feedback found...");
+			response.setFeedbackList(feedbackList);
+		} else {
+			response.setStatusCode(401);
+			response.setMessage("Failed");
+			response.setDescription("Feedbacks not found");
+		}
+		return response;
+	}
+
+	@GetMapping("/viewPlaceOrder")
+	public CapstoreResponseBean viewPlaceOrder() {
+		CapstoreResponseBean response = new CapstoreResponseBean();
+		List<OrderBean> orderList = service.viewPlaceOrder();
+		if (orderList != null) {
+			response.setStatusCode(201);
+			response.setMessage("Success");
+			response.setDescription("Order list found...");
+			response.setOrderList(orderList);
+		} else {
+			response.setStatusCode(401);
+			response.setMessage("Failed");
+			response.setDescription("Order list not found");
+		}
+		return response;
+	}
+
+	@GetMapping("/viewCancelledOrder")
+	public CapstoreResponseBean viewCancelledOrder() {
+		CapstoreResponseBean response = new CapstoreResponseBean();
+		List<OrderStatusBean> cancelledOrderList = service.viewCancelledOrder();
+		if (cancelledOrderList != null) {
+			response.setStatusCode(201);
+			response.setMessage("Success");
+			response.setDescription("Cancelled order list found...");
+			response.setOrderStatusList(cancelledOrderList);
+		} else {
+			response.setStatusCode(401);
+			response.setMessage("Failed");
+			response.setDescription("Cancelled order list not found");
+		}
+		return response;
+	}
+
+	@GetMapping("/viewVerifiedMerchant")
+	public CapstoreResponseBean viewVerifiedMerchant() {
+		CapstoreResponseBean response = new CapstoreResponseBean();
+		List<PermanentMerchantBean> verifiedMerchantList = service.viewVerifiedMerchant();
+		if (verifiedMerchantList != null) {
+			response.setStatusCode(201);
+			response.setMessage("Success");
+			response.setDescription("Verified Merchant list found...");
+			response.setPermanentMerchantList(verifiedMerchantList);
+		} else {
+			response.setStatusCode(401);
+			response.setMessage("Failed");
+			response.setDescription("Verified merchant list not found..");
+		}
+		return response;
+	}
+
+	@GetMapping("/ViewMerchantListToVerify")
+	public CapstoreResponseBean ViewMerchantListToVerify() {
+		CapstoreResponseBean response = new CapstoreResponseBean();
+		List<TemporaryMerchantBean> merchantListToVerify = service.ViewMerchantListToVerify();
+		if (merchantListToVerify != null) {
+			response.setStatusCode(201);
+			response.setMessage("Success");
+			response.setDescription("Merchant list to verify is found...");
+			response.setTemporaryMerchantList(merchantListToVerify);
+		} else {
+			response.setStatusCode(401);
+			response.setMessage("Failed");
+			response.setDescription("Merchant list to verify not found..");
+		}
+		return response;
+	}
+
+	@GetMapping("/ViewCustomerListToVerify")
+	public CapstoreResponseBean ViewCustomerListToVerify() {
+		CapstoreResponseBean response = new CapstoreResponseBean();
+		List<TemporaryCustomerBean> customerListToVerify = service.ViewCustomerListToVerify();
+		if (customerListToVerify != null) {
+			response.setStatusCode(201);
+			response.setMessage("Success");
+			response.setDescription("Customer list to verify is found....");
+			response.setTemporaryCustomerList(customerListToVerify);
+		} else {
+			response.setStatusCode(401);
+			response.setMessage("Failed");
+			response.setDescription("Customer list to verify not found..");
+		}
+		return response;
+	}
+
+	@GetMapping("/viewVerifiedCustomer")
+	public CapstoreResponseBean viewVerifiedCustomer() {
+		CapstoreResponseBean response = new CapstoreResponseBean();
+		List<LoginBean> verifiedCustomerList = service.viewVerifiedCustomer();
+		if (verifiedCustomerList != null) {
+			response.setStatusCode(201);
+			response.setMessage("Success");
+			response.setDescription("Verified customer list found...");
+			response.setLoginList(verifiedCustomerList);
+		} else {
+			response.setStatusCode(401);
+			response.setMessage("Failed");
+			response.setDescription("Verified customer list not found..");
+		}
+		return response;	
+	}
+
+	@GetMapping("/viewProduct")
+	public CapstoreResponseBean viewProduct() {
+		CapstoreResponseBean response = new CapstoreResponseBean();
+		List<ProductBean> productList = service.viewProduct();
+		if (productList != null) {
+			response.setStatusCode(201);
+			response.setMessage("Success");
+			response.setDescription("Product list found...");
+			response.setProductList(productList);
+		} else {
+			response.setStatusCode(401);
+			response.setMessage("Failed");
+			response.setDescription("Product list not found");
+		}
+		return response;
+	}
+
+	@PutMapping(path = "/merchantVerification")
+	public CapstoreResponseBean merchantVerification(@RequestParam String email) {
+		boolean isAdded = service.merchantVerification(email);
+		CapstoreResponseBean response = new CapstoreResponseBean();
+		if (isAdded) {
+			response.setStatusCode(201);
+			response.setMessage("Success");
+			response.setDescription("Merchant Verified..!!");
+		} else {
+			response.setStatusCode(401);
+			response.setMessage("Failed");
+			response.setDescription("Something went wrong.. Please check!!");
+		}
+		return response;
+	}
+	
+	@PutMapping(path = "/customerVerification")
+	public CapstoreResponseBean customerVerification(@RequestParam String email) {
+		boolean isAdded = service.customerVerification(email);
+		CapstoreResponseBean response = new CapstoreResponseBean();
+		if (isAdded) {
+			response.setStatusCode(201);
+			response.setMessage("Success");
+			response.setDescription("Customer Verified..!!");
+		} else {
+			response.setStatusCode(401);
+			response.setMessage("Failed");
+			response.setDescription("Something went wrong.. Please check!!");
+		}
+		return response;
+	}
+}

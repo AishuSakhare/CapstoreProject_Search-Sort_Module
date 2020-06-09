@@ -1,0 +1,5 @@
+package com.capgemini.capstore.stepdefination;
+
+public class SearchProduct {
+
+}
